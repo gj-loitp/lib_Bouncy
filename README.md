@@ -7,22 +7,26 @@ Add IOS-like overscroll animation to your scrolling views using [SpringAnimation
 
 Currently includes BouncyRecyclerView and BouncyNestedScrollView.
 
-Since [Jcenter is closing](https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/), this project will be migrated to JitPack in the future. For now please manually download from [releases](https://github.com/valkriaine/Bouncy/releases) until further notice. 
-Thank you for your understanding.
-
 # Add Bouncy to your project
-
-Please manually download the newest release at [releases](https://github.com/valkriaine/Bouncy/releases).
 
  ### Gradle
  
-  In Android Studio, File -> New -> New Module -> Import .jar/.aar and import `bouncy-release.aar`.
+ Add it in your root build.gradle at the end of repositories:
+ 
+  ```
+ allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+ ```
   
- In your app module build.gradle, add dependency for `recyclerview` and `bouncy-release`:
+ In your app module build.gradle, add dependency for `recyclerview` and `bouncy`:
 ```
    dependencies {
         implementation 'androidx.recyclerview:recyclerview:1.2.1'
-        implementation project(':bouncy-release')
+        implementation 'com.github.valkriaine:Bouncy:2.3'
    }
  ```
  
@@ -65,6 +69,15 @@ Use as normal NestedScrollView. Place it in your layout:
 
 Strongly suggest to keep both values lower than 5.
 
+### It is now possible to bind bouncy animation to parent instead of BouncyNestedScrollView
+
+```java
+bouncy_scroll_view.setBindSpringToParent(true);
+
+// this will bind the spring animations to parent instead of self
+
+```
+
 # BouncyRecyclerView
 
 BouncyRecyclerView adds overscroll effect to RecyclerView and supports drag & drop and swiping gestures
@@ -97,8 +110,6 @@ set up layout manager and adapter. Theoratically supports any LayoutManager:
 
 ## Orientation 
 
-1.8 version added support for both vertical scrolling and horizontal bounce animation
-
 <img src="./images/BouncyRecyclerView_Horizontal.gif"/> 
 
 When you set the LayoutManager, ```BouncyRecyclerView``` will automatically detect the orientation of the layout. 
@@ -121,7 +132,7 @@ If the bounce animation is incorrect, you can also manually set the animation or
 
 ```allow_drag_reorder``` and ```allow_item_swipe``` are set to false by default. If you would like to enable these features, simply set them to true.
 
-### Spring customization (Bouncy 1.6 and above)
+### Spring customization
 
 ```recyclerview_damping_ratio``` and ```recyclerview_stiffness``` please refer to [damping ratio](https://developer.android.com/guide/topics/graphics/spring-animation#damping-ratio) and [stiffness](https://developer.android.com/guide/topics/graphics/spring-animation#stiffness)
 
@@ -134,25 +145,6 @@ Set in code:
    recycler_view.setStiffness(Bouncy.STIFFNESS_HIGH);
 ```
 
-A known issue is when customizing spring properties, items close to the edges of the screen may be clipped since the current implementation animates the Y translation of the whole recyclerview. A workaround is to place the ```BouncyRecyclerView``` inside a ```NestedScrollView``` (not necessarily ```BouncyNestedScrollView```):
-
-```xml
-<androidx.core.widget.NestedScrollView 
-            android:layout_width="match_parent" 
-            android:layout_height="match_parent">
-
-        <!--setting damping ratio to HIGH_BOUNCY may result in items being clipped near the edges-->
-        <com.factor.bouncy.BouncyRecyclerView
-                android:id="@+id/rc"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:recyclerview_damping_ratio="DAMPING_RATIO_HIGH_BOUNCY"
-                app:recyclerview_stiffness="STIFFNESS_LOW"
-                app:allow_drag_reorder="true"
-                app:allow_item_swipe="true"/>
-        
-    </androidx.core.widget.NestedScrollView>
-```
 
 ## Drag & drop 
 
